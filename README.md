@@ -8,10 +8,13 @@ Para instalar los requirements hay que ejecutar los siguientes comandos:
 
 # Llamada a la plantilla:
 1. Obtener una descripción sobre los argumentos de llamada:
+
     python3 clasificador.py --help 
 2. Entrenar un modelo con la configuración por defecto de plantillai (sin alterar config.json):
+
     python3 clasificador.py -m train -f "archivo.csv" -a {naive_bayes/kNN/decision_tree/random_forest} -p "columna a predecir"
 3. Probar el modelo:
+   
     python3 clasificador.py -m "test"
 
 
