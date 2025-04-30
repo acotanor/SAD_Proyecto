@@ -1,0 +1,15 @@
+click==8.1.8
+colorama==0.4.6
+colorclass==2.2.2
+docopt==0.6.2
+imbalanced-learn==0.13.0
+joblib==1.3.2
+nltk==3.8.1
+numpy==1.26.4
+pandas==2.2.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+scikit-learn==1.6.1
+scipy==1.15.2
+six==1.17.0
+tqdm==4.67.1
