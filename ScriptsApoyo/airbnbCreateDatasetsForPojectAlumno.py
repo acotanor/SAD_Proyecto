@@ -60,6 +60,9 @@ for i in range(len(df)):
 spain_df = pd.DataFrame(spain_data)
 portugal_df = pd.DataFrame(portugal_data)
 
+spain_df['pais'] = 'España'
+portugal_df['pais'] = 'Portugal'
+
 # Guardar en archivos CSV
 spain_df.to_csv("airbnb_spain.csv", index=False)
 portugal_df.to_csv("airbnb_portugal.csv", index=False)
