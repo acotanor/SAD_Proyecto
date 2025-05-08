@@ -38,9 +38,9 @@ else:
 
 # Configuración del modelo y prompt
 template = (
-    "You are a professional translator. The response need to be just 1 option, and only that nothing else. "
+    "You are a professional translator. The response needs to be just 1 option, and only that, nothing else. "
     "Translate the following text into informal English, only if the original text is not in English. "
-    "If the original text is already in English, return it as is, just change ’ for ' and never use ’ use ' instead\n"
+    "If the original text is already in English, return it as is, just change ’ for ' and never use ’ use ' instead.\n"
     "Text: {text}\nTranslation:"
 )
 prompt = PromptTemplate.from_template(template)
@@ -98,11 +98,11 @@ for column in columns_to_translate:
                 input_prompt = prompt.format(text=comment)
                 try:
                     translated = model(input_prompt)
-                    translated_parts.append(translated)
+                    translated_parts.append(f"| {translated}")  # Agregar '|' delante de cada comentario traducido
                     print(f"Translated part {idx_part+1} in row {i}: {translated}")
                 except Exception as e:
                     print(f"Error translating part in row {i}: {e}")
-                    translated_parts.append(comment)
+                    translated_parts.append(f"| {comment}")  # Agregar '|' incluso si no se traduce
 
             final_translation = " ".join(translated_parts)
             translated_reviews.append(final_translation)
