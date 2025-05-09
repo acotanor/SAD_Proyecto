@@ -11,6 +11,7 @@ def analyze_sentiment(review):
     
     analysis = TextBlob(review)
     polarity = analysis.sentiment.polarity
+    polarity = escalar(polarity)
     
     if polarity > 0:
         return "positive", polarity
@@ -18,6 +19,9 @@ def analyze_sentiment(review):
         return "negative", polarity
     else:
         return "neutral", polarity
+
+def escalar(x):
+    return 4*x + 5
 
 def determine_overall_sentiment(sentiments):
     """
@@ -83,7 +87,7 @@ def process_reviews(input_csv, output_csv, review_column):
 
 # Ejemplo de uso
 if __name__ == "__main__":
-    input_csv = "AirBNBReviews.csv"  # Cambia esto por el nombre de tu archivo CSV de entrada
-    output_csv = "reviews_with_sentiment.csv"
+    input_csv = "../tripadvisor_hotel_reviews.csv"  # Cambia esto por el nombre de tu archivo CSV de entrada
+    output_csv = "reviews_with_sentiment_escala_TA.csv"
     review_column = "Review"  # Cambia esto por el nombre de la columna que contiene las reseñas
     process_reviews(input_csv, output_csv, review_column)
