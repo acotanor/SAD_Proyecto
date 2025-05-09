@@ -1,0 +1,52 @@
+###### AIRBNB ########
+
+-ID: Id del lugar (Numérico)
+-LISTINT_URL: URL (Texto)
+-NAME: Nombre del lugar (Texto)
+-SUMMARY: Reseña (Texto)
+-SPACE: Espacio ofrecido al huésped (Texto)
+-DESCRIPTION: Descripción del alojamiento (Texto)
+-NEIGHBORHOOD_OVERVIEW: Alrededores del alojamiento (Texto)
+-NOTES: Notas extra sobre el alojamiento (Texto)
+-TRANSIT: Transporte al alojamiento (Texto)
+-ACCESS: Acceso a que lugares del alojamiento (Texto)
+-INTERACTION: Interacciones (Texto)
+-HOUSE_RULES: Reglas (Texto)
+-PROPERTY_TYPE: Tipo de alojamiento (Texto : Apartment, Loft…)
+-ROOM_TYPE: Tipo de habitación (Texto: Private room, Entire…)
+-BED_TYPE: Tipo de cama (Texto: Real bed, Sofa…)
+-MINIMUM_NIGHTS: Noches mínimas de estancia (Numérico)
+-MAXIMUM_NIGHTS: Noches máximas de estancia (Numérico)
+-CANCELLATION_POLICY: Politica de cancelación (Texto: Flexible, Moderate…)
+-LAST_SCRAPED: Última actualización datos generales (Fecha)
+-CALENDAR_LAST_ESCRAPED: Ultima actualización calendario (Fecha)
+-FIRST_REVIEW: Primera review (Fecha)
+-LAST_REVIEW: Última review (Fecha)
+-ACCOMMODATES: Capacidad huéspedes (Numérico)
+-DEBROOMS: Número habitaciones (Numérico)
+-BEDS: Número camas (Numérico)
+-NUMBER_OF_REVIEWS: Número de reviews (Numérico)
+-BATHROOMS: Número de baños (Numérico)
+-AMENITIES: Servicios ofrecidos (Texto)
+-PRICE: Precio (Numérico)
+-SECURITY_DEPOSIT: Deposito de seguridad (Numérico)
+-CLEANING_FEE: Tasa de limpieza (Numérico)
+-EXTRA_PEOPLE: Coste adicional por huésped (Numérico)
+-GUESTS_INCLUDED: Huéspedes incluidos sin precio extra (Numérico)
+-IMAGES: URL (Texto)
+-HOST: URL (Texto)
+-ADDRESS: Dirección (Texto)
+-AVALIABILITY: Disponibilidad (Texto)
+-REVIEW_SCORES: Puntuaciones (Numérico: Sobre 10)
+-REVIEWS: Reviews (Texto)
+-WEEKLY_PRICE: Precio semanal (Numérico)
+-MONTHLY_PRICE: Precio mensual (Numérico)
+-TEXT_EMBEDDINGS: Datos es vectores (Numérico)
+-IMAGE_EMBEDDINGS: Datos en vectores (Numérico)
+
+
+---- FECHA: LINEAL
+---- PRECIO VS. SATISFACCION: CORRELACIÓN 
+
+*******
+
