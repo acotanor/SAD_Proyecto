@@ -1,5 +1,6 @@
 import pandas as pd
 import ast
+from tqdm import tqdm
 from langchain_core.prompts import PromptTemplate
 from langchain_ollama.llms import OllamaLLM
 import argparse
@@ -28,6 +29,8 @@ if args.row_range:
         raise ValueError("Invalid --row_range format. Use 'start-end'")
 elif args.sample > 0:
     row_indices = set(range(args.sample))
+else:
+    row_indices = set(range(0, len(pd.read_csv(args.input_csv))))  # Read length without loading full DF
 
 # Model configuration
 template = (
@@ -43,50 +46,69 @@ model = OllamaLLM(model=args.model, temperature=0.7)
 df = pd.read_csv(args.input_csv)
 columns_to_process = [c.strip() for c in args.review_columns.split(',')]
 
-def translate_text(text):
-    """Translate individual text entries"""
+def count_tasks():
+    """Pre-count total translation tasks for accurate progress tracking"""
+    total = 0
+    for col in columns_to_process:
+        for idx in row_indices:
+            entry = df.at[idx, col]
+            try:
+                parsed = ast.literal_eval(entry)
+                if isinstance(parsed, list):
+                    if args.subcolumn:
+                        total += sum(1 for item in parsed 
+                                   if isinstance(item, dict) and args.subcolumn in item)
+                    else:
+                        total += len(parsed)
+                else:
+                    total += 1
+            except:
+                total += 1
+    return total
+
+def translate_text(text, pbar):
+    """Translate individual text entries with progress update"""
     if pd.isna(text) or not text.strip():
         return text
     
     try:
         translated = model(prompt.format(text=text))
+        pbar.update(1)
         return translated.replace('\n', ' ').replace('’', "'").strip()
     except Exception as e:
-        print(f"Translation error: {e}")
+        print(f"\nTranslation error: {e}")
+        pbar.update(1)
         return text
 
-def process_entry(entry):
+def process_entry(entry, pbar):
     """Handle both array-type and simple string reviews"""
-    # Try to parse as array first
     try:
         reviews = ast.literal_eval(entry)
         if not isinstance(reviews, list):
-            return translate_text(entry)
+            return translate_text(entry, pbar)
         
-        # Process array-type review
         processed = []
         for item in reviews:
-            if isinstance(item, dict) and args.subcolumn and args.subcolumn in item:
-                # Translate specified subcolumn
-                item[args.subcolumn] = translate_text(item[args.subcolumn])
+            if args.subcolumn and isinstance(item, dict) and args.subcolumn in item:
+                # Translate specific subcolumn
+                item[args.subcolumn] = translate_text(item[args.subcolumn], pbar)
+            elif not args.subcolumn and isinstance(item, str):
+                # Translate entire array element
+                item = translate_text(item, pbar)
             processed.append(item)
         return str(processed)
-    
     except (SyntaxError, ValueError):
-        # Process as simple string
-        return translate_text(entry)
+        return translate_text(entry, pbar)
 
-# Process specified columns
-for col in columns_to_process:
-    if col not in df.columns:
-        raise ValueError(f"Column '{col}' not found in CSV")
-    
-    print(f"Processing column: {col}")
-    df[col] = [
-        process_entry(entry) if idx in row_indices or not row_indices else entry
-        for idx, entry in enumerate(df[col])
-    ]
+# Process data with progress bar
+with tqdm(total=count_tasks(), desc="Translating comments", unit="comment") as pbar:
+    for col in columns_to_process:
+        if col not in df.columns:
+            raise ValueError(f"Column '{col}' not found in CSV")
+        
+        for idx in row_indices:
+            df.at[idx, col] = process_entry(df.at[idx, col], pbar)
 
 # Save results
 df.to_csv(args.output_csv, index=False, encoding='utf-8', quoting=1)
-print("Translation completed successfully!")
+print("\nTranslation completed successfully!")
