@@ -83,7 +83,8 @@ def entrenar_stacking(csv_path):
     features_numericas = scaler.fit_transform(df[features_cols])
     X_final = hstack([X_tfidf, features_numericas])
 
-    X_train, X_test, y_train, y_test = train_test_split(X_final, y, test_size=0.2, random_state=42, stratify=y)
+    X_train, X_temp, y_train, y_temp = train_test_split(X_final, y, test_size=0.4, stratify=y, random_state=42)
+    X_dev, X_test, y_dev, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp, random_state=42)
 
     # GridSearch para RandomForest
     print("\nBuscando mejores hiperparámetros para RandomForest...")
@@ -93,7 +94,7 @@ def entrenar_stacking(csv_path):
         'min_samples_split': [2, 5]
     }
     grid_rf = GridSearchCV(RandomForestClassifier(class_weight='balanced', random_state=42), param_grid_rf, cv=3, n_jobs=-1)
-    grid_rf.fit(X_train, y_train)
+    grid_rf.fit(X_dev, y_dev)
     print("Mejores parámetros para RandomForest:", grid_rf.best_params_)
 
     # GridSearch para LogisticRegression
@@ -103,7 +104,7 @@ def entrenar_stacking(csv_path):
         'solver': ['lbfgs']
     }
     grid_lr = GridSearchCV(LogisticRegression(max_iter=2000), param_grid_lr, cv=3, n_jobs=-1)
-    grid_lr.fit(X_train, y_train)
+    grid_lr.fit(X_dev, y_dev)
     print("Mejores parámetros para LogisticRegression:", grid_lr.best_params_)
 
     # Stacking ensemble mejorado
