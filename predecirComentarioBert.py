@@ -1,16 +1,25 @@
 import joblib
 import numpy as np
 import pandas as pd
-import sys
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i","--input",help="Ruta del archivo csv sobre el que entrenar el modelo.",type=str)
+parser.add_argument("-o","--output",help="Ruta del archivo csv sobre el que volcar los resultados.",type=str)
+parser.add_argument("--knn_model",help="Ruta del modelo knn.",type=str, default="Modelos/modelo_knn.pkl")
+parser.add_argument("--knn_vectorizer",help="Ruta del vectorizer.",type=str, default="Modelos/vectorizador_tfidf.pkl")
+parser.add_argument("--bert_model",help="Ruta del modelo bert.",type=str, default="Modelos/modelo_bert_multiclase")
+parser.add_argument("--bert_tokenizer",help="Ruta del tokenizer.",type=str, default="Modelos/modelo_bert_multiclase")
+args = parser.parse_args()
 
 # Cargar modelos y vectorizadores
-knn_model = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\modelo_knn.pkl")
-knn_vectorizer = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\vectorizador_tfidf.pkl")
-bert_model = BertForSequenceClassification.from_pretrained("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\ScriptsApoyo\\modelo_bert_multiclase")
-bert_tokenizer = BertTokenizer.from_pretrained("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\ScriptsApoyo\\modelo_bert_multiclase")
+knn_model = joblib.load(args.knn_model)
+knn_vectorizer = joblib.load(args.knn_vectorizer)
+bert_model = BertForSequenceClassification.from_pretrained(args.bert_model)
+bert_tokenizer = BertTokenizer.from_pretrained(args.bert_tokenizer)
 bert_model.eval()
 
 def predecir_sentimiento(review):
@@ -59,7 +68,7 @@ def predecir_reviews_csv(input_csv, output_csv):
     if 'Review' not in df.columns:
         raise ValueError("El archivo debe tener una columna 'Review'")
     resultados = []
-    for review in tqdm(df['Review'], desc="Procesando reviews"):
+    for review in tqdm(df['Review'].values.astype('U'), desc="Procesando reviews"):
         sentimiento = predecir_sentimiento(review)
         score_bert = predecir_score_bert(review)
         puntuacion = score_final(sentimiento, score_bert)
@@ -74,10 +83,8 @@ def predecir_reviews_csv(input_csv, output_csv):
     print(f"Resultados guardados en {output_csv}")
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        input_csv = sys.argv[1]
-        output_csv = sys.argv[2]
-        predecir_reviews_csv(input_csv, output_csv)
+    if args.input != None and args.output != None :
+        predecir_reviews_csv(args.input, args.output)
     else:
         review = input("Introduce una review: ")
         predecir_review(review)
