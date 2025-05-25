@@ -46,8 +46,12 @@ def entrenar_knn_con_varios_k(csv_path, k_values):
     X_tfidf = vectorizer.fit_transform(X)
 
     # Dividir los datos en entrenamiento y prueba
-    X_train, X_test, y_train, y_test = train_test_split(X_tfidf, y, test_size=0.2, random_state=42)
-
+    # X_train, X_test, y_train, y_test = train_test_split(X_tfidf, y, test_size=0.2, random_state=42)
+    
+    # Dividir los datos en train(60%) dev(20%) y test(20%)
+    X_train, X_temp, y_train, y_temp = train_test_split(X_tfidf, y, test_size=0.4, stratify=y, random_state=42)
+    X_dev, X_test, y_dev, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp, random_state=42)
+    
     # Probar diferentes valores de k
     mejor_k = None
     mejor_accuracy = 0
@@ -57,8 +61,8 @@ def entrenar_knn_con_varios_k(csv_path, k_values):
         model.fit(X_train, y_train)
 
         # Evaluar el modelo
-        y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
+        y_pred = model.predict(X_dev)
+        accuracy = accuracy_score(y_dev, y_pred)
         print(f"Exactitud para k={k}: {accuracy:.4f}")
 
         # Guardar el mejor k
