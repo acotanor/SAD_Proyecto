@@ -16,6 +16,14 @@ from nltk.corpus import stopwords
 from scipy.sparse import hstack
 from sklearn.preprocessing import StandardScaler
 from textblob import TextBlob
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i","--input",help="Ruta del archivo csv sobre el que entrenar el modelo.",type=str,required=True)
+parser.add_argument("-m","--model_path",help="Ruta donde almacenar el modelo.",type=str, default="Modelos/")
+parser.add_argument("-v","--vectorizer_path",help="Ruta donde almacenar el vectorizer.",type=str, default="Modelos/")
+parser.add_argument("-s","--scaler_path",help="Ruta donde almacenar el scaler.",type=str, default="Modelos/")
+args = parser.parse_args()
 
 def cargar_datos_tripadvisor(csv_path):
     df = pd.read_csv(csv_path)
@@ -133,9 +141,9 @@ def guardar_modelo(model, vectorizer, scaler, model_path, vectorizer_path, scale
     print(f"Scaler guardado en: {scaler_path}")
 
 if __name__ == "__main__":
-    csv_path = "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\tripadvisor_hotel_reviews.csv"
+    csv_path = args.input
     modelo, vectorizador, scaler = entrenar_stacking(csv_path)
     guardar_modelo(modelo, vectorizador, scaler,
-                   "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\modelo_clasificacion.pkl",
-                   "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\vectorizador_clasificacion.pkl",
-                   "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\scaler_clasificacion.pkl")
+                   args.model_path + "modelo_clasificacion.pkl",
+                   args.vectorizer_path + "vectorizador_clasificacion.pkl",
+                   args.scaler_path + "scaler_clasificacion.pkl")

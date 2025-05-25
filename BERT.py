@@ -7,6 +7,11 @@ from torch.optim import AdamW
 from sklearn.metrics import classification_report, confusion_matrix
 from tqdm import tqdm
 import random
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i","--input",help="Ruta del archivo csv sobre el que entrenar el modelo.",type=str,required=True)
+args = parser.parse_args()
 
 # Configuración
 MODEL_NAME = 'bert-base-uncased'
@@ -95,7 +100,7 @@ def eval_model(model, data_loader):
 
 def main():
     # Cargar datos
-    df = pd.read_csv("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\tripadvisor_hotel_reviews.csv")
+    df = pd.read_csv(args.input)
     df = df.dropna(subset=['Review', 'Rating'])
     df['Review'] = df['Review'].astype(str)
     # Etiquetas de 0 a 4
@@ -143,13 +148,13 @@ def main():
     print("Confusion Matrix:\n", confusion_matrix(y_true, y_pred))
 
     # Guardar modelo y tokenizer
-    model.save_pretrained("modelo_bert_multiclase")
-    tokenizer.save_pretrained("modelo_bert_multiclase")
+    model.save_pretrained("Modelos/modelo_bert_multiclase")
+    tokenizer.save_pretrained("Modelos/modelo_bert_multiclase")
     print("Modelo y tokenizer guardados en la carpeta 'modelo_bert_multiclase'")
 
     # Cargar modelo y tokenizer guardados
-    model = BertForSequenceClassification.from_pretrained("modelo_bert_multiclase")
-    tokenizer = BertTokenizer.from_pretrained("modelo_bert_multiclase")
+    model = BertForSequenceClassification.from_pretrained("Modelos/modelo_bert_multiclase")
+    tokenizer = BertTokenizer.from_pretrained("Modelos/modelo_bert_multiclase")
 
 if __name__ == "__main__":
     main()

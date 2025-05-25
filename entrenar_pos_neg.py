@@ -4,6 +4,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i","--input",help="Ruta del archivo csv sobre el que entrenar el modelo.",type=str,required=True)
+parser.add_argument("-m","--model_path",help="Ruta donde almacenar el modelo.",type=str, default="Modelos/")
+parser.add_argument("-v","--vectorizer_path",help="Ruta donde almacenar el vectorizer.",type=str, default="Modelos/")
+args = parser.parse_args()
 
 # 1. Cargar los datos
 def cargar_datos(csv_path):
@@ -85,7 +92,7 @@ def guardar_modelo(model, vectorizer, model_path, vectorizer_path):
 # 5. Ejecutar el entrenamiento
 if __name__ == "__main__":
     # Ruta del archivo CSV
-    csv_path = "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\AirBNBReviews.csv"
+    csv_path = args.input
 
     # Valores de k a probar
     k_values = [1, 3, 5, 7, 9, 11]
@@ -95,5 +102,5 @@ if __name__ == "__main__":
 
     # Guardar el modelo y el vectorizador
     guardar_modelo(modelo, vectorizador,
-                   "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\modelo_knn.pkl",
-                   "c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\vectorizador_tfidf.pkl")
+                   args.model_path + "modelo_knn.pkl",
+                   args.vectorizer_path + "vectorizador_tfidf.pkl")
