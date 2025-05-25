@@ -5,13 +5,25 @@ import sys
 from tqdm import tqdm
 from scipy.sparse import hstack
 from textblob import TextBlob
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i","--input",help="Ruta del archivo csv sobre el que entrenar el modelo.",type=str)
+parser.add_argument("-o","--output",help="Ruta del archivo csv sobre el que volcar los resultados.",type=str)
+parser.add_argument("--knn_model",help="Ruta del modelo knn.",type=str, default="Modelos/modelo_knn.pkl")
+parser.add_argument("--knn_vectorizer",help="Ruta del knn vectorizer.",type=str, default="Modelos/vectorizador_tfidf.pkl")
+parser.add_argument("--stacking_model",help="Ruta del modelo stacking.",type=str, default="Modelos/modelo_clasificacion.pkl")
+parser.add_argument("--stacking_scaler",help="Ruta del modelo stacking.",type=str, default="Modelos/scaler_clasificacion.pkl")
+parser.add_argument("--stacking_vectorizer",help="Ruta del stacking vectorizer.",type=str, default="Modelos/vectorizador_clasificacion.pkl")
+args = parser.parse_args()
+
 
 # Cargar modelos y vectorizadores
-knn_model = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\modelo_knn.pkl")
-knn_vectorizer = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\vectorizador_tfidf.pkl")
-stacking_model = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\modelo_clasificacion.pkl")
-stacking_vectorizer = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\vectorizador_clasificacion.pkl")
-stacking_scaler = joblib.load("c:\\Users\\peiol\\OneDrive\\Escritorio\\Sad\\SAD_Proyecto\\scaler_clasificacion.pkl")
+knn_model = joblib.load(args.knn_model)
+knn_vectorizer = joblib.load(args.knn_vectorizer)
+stacking_model = joblib.load(args.stacking_model)
+stacking_vectorizer = joblib.load(args.stacking_vectorizer)
+stacking_scaler = joblib.load(args.stacking_scaler)
 
 def predecir_sentimiento(review):
     X_tfidf = knn_vectorizer.transform([review])
@@ -58,7 +70,7 @@ def predecir_reviews_csv(input_csv, output_csv):
     if 'Review' not in df.columns:
         raise ValueError("El archivo debe tener una columna 'Review'")
     resultados = []
-    for review in tqdm(df['Review'], desc="Procesando reviews"):
+    for review in tqdm(df['Review'].values.astype('U'), desc="Procesando reviews"):
         sentimiento = predecir_sentimiento(review)
         score_stacking = predecir_score_stacking(review)
         puntuacion = score_final(sentimiento, score_stacking)
@@ -73,10 +85,8 @@ def predecir_reviews_csv(input_csv, output_csv):
     print(f"Resultados guardados en {output_csv}")
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        input_csv = sys.argv[1]
-        output_csv = sys.argv[2]
-        predecir_reviews_csv(input_csv, output_csv)
+    if args.input != None and args.output != None :
+        predecir_reviews_csv(args.input, args.output)
     else:
         review = input("Introduce una review: ")
         predecir_review(review)
