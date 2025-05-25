@@ -9,21 +9,14 @@ Para instalar los requirements hay que ejecutar los siguientes comandos:
 
 # Entrenar modelos:
 
-
 ¡La carpeta modelos ya contiene modelos entrenados!
 ## Clasificador binario knn:
-
-
 entrenar_pos_neg.py -i Datos/AirBNBReviews.csv
 
 ## Clasificador categorial random forest:
-
-
 entrenar_TripAdvisor.py -i Datos/tripadvisor_hotel_reviews.csv
 
 ## Clasificador BERT:
-
-
 BERT.py -i Datos/tripadvisor_hotel_reviews.csv
 
 # Evaluar Comentarios:
