@@ -6,16 +6,30 @@ Para instalar los requirements hay que ejecutar los siguientes comandos:
 3. python3 -m pip install --upgrade pip
 4. pip install -r requirements.txt
 
-# Llamada a la plantilla:
-1. Obtener una descripción sobre los argumentos de llamada:
 
-    python3 clasificador.py --help 
-2. Entrenar un modelo con la configuración por defecto de plantillai (sin alterar config.json):
-
-    python3 clasificador.py -m train -f "archivo.csv" -a {naive_bayes/kNN/decision_tree/random_forest} -p "columna a predecir"
-3. Probar el modelo:
-   
-    python3 clasificador.py -m "test"
+# Entrenar modelos:
 
 
-Para cambiar la configuración solo hay que modificar los atributos de config.json.
+¡La carpeta modelos ya contiene modelos entrenados!
+## Clasificador binario knn:
+
+
+entrenar_pos_neg.py -i Datos/AirBNBReviews.csv
+
+## Clasificador categorial random forest:
+
+
+entrenar_TripAdvisor.py -i Datos/tripadvisor_hotel_reviews.csv
+
+## Clasificador BERT:
+
+
+BERT.py -i Datos/tripadvisor_hotel_reviews.csv
+
+# Evaluar Comentarios:
+
+## Evaluar todos los comentarios de un archivo csv:
+    python3 predecirComentarioBert.py -i Datos/AirBNBReviews.csv -o Datos/AirBNBReviews_evaluado.csv  
+
+## Evaluar comentarios individuales (escritos desde la terminal):
+    python3 predecirComentarioBert.py
